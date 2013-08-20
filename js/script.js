@@ -21,7 +21,6 @@ function convert(e) {
         return false;
     }
 
-
     selectedText /= 1.3;
     selectedText.toFixed(2);
 

@@ -1,42 +1,48 @@
-var body = document.getElementsByTagName('body')[0];
-var text = document.getElementsByTagName('p')[0];
+var CurrencyConverter = (function (){
 
-var selectedText = '';
-
-function convert(e) {
-    e = e || window.event;
-
-    event.preventDefault ? event.preventDefault() : (event.returnValue=false);
-
-
-    if (window.getSelection) {
-        selectedText = window.getSelection().toString();
-    } else if (document.getSelection) {
-        selectedText = document.getSelection();
-    } else if (document.selection) {
-        selectedText = document.selection.createRange().text;
-    }
-
-    if(selectedText.length == 0 || isNaN(selectedText)){
-        return false;
-    }
-
-    selectedText /= 1.3;
-    selectedText.toFixed(2);
-
-    var popup = document.createElement('div');
-    popup.innerHTML = selectedText.toFixed(2)+"EUR";
-    body.appendChild(popup);
-    popup.style.position = 'absolute';
-    popup.style.top = e.clientY-20+'px';
-    popup.style.left = e.clientX+'px';
-
-    setTimeout(function() {
-        if(popup){
-            popup.parentNode.removeChild(popup);
+    function getSelectedText(){
+        var selected;
+        if (window.getSelection) {
+            selected = window.getSelection().toString();
+        } else if (document.getSelection) {
+            selected = document.getSelection();
+        } else if (document.selection) {
+            selected = document.selection.createRange().text;
         }
-    }, 3000);
+        return selected;
+    }
 
-}
+    function checkAndConvert(str){
+        if(str.length !== 0 && !isNaN(str)){
+            str /= 1.3;
+            return str;
+        } else {
+            return false;
+        }
+    }
 
-text.addEventListener ('contextmenu', convert, false);
+    function createConvertedPopup (e){
+        var e = e || window.event;
+        var target = e.target || e.srcElement;
+        event.preventDefault ? event.preventDefault() : (event.returnValue=false);
+
+        if(checkAndConvert(getSelectedText()) === false){
+            return false;
+        }
+
+        var popup = document.createElement('div');
+        popup.innerHTML =  checkAndConvert(getSelectedText()).toFixed(2)+" EUR";
+        target.parentNode.appendChild(popup);
+        popup.style.position = 'absolute';
+        popup.style.top = e.clientY-20+'px';
+        popup.style.left = e.clientX+'px';
+
+        setTimeout(function() {
+            if(popup){
+                popup.parentNode.removeChild(popup);
+            }
+        }, 3000);
+    }
+
+    this.addEventListener ('contextmenu', createConvertedPopup, false);
+})();

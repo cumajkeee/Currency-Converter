@@ -1,7 +1,7 @@
 var CurrencyConverter = (function () {
-    var instance = this;
+    var instance = {};
 
-    this.getSelectedText = function () {
+    instance.getSelectedText = function () {
         var selected;
         if (window.getSelection) {
             selected = window.getSelection().toString();
@@ -13,7 +13,7 @@ var CurrencyConverter = (function () {
         return selected;
     };
 
-    this.checkAndConvert = function (str) {
+    instance.checkAndConvert = function (str) {
         if(str.length !== 0 && !isNaN(str)) {
             str /= 1.3;
             return str.toFixed(2);
@@ -22,17 +22,18 @@ var CurrencyConverter = (function () {
         }
     };
 
-    this.createConvertedPopup = function (e) {
+    instance.createConvertedPopup = function (e) {
         var e = e || window.event;
         var target = e.target || e.srcElement;
         event.preventDefault ? event.preventDefault() : (event.returnValue=false);
+        var getAndConvert = instance.checkAndConvert(instance.getSelectedText());
 
-        if(checkAndConvert(getSelectedText()) === false){
+        if(getAndConvert === false){
             return false;
         }
 
         var popup = document.createElement('div');
-        popup.innerHTML =  checkAndConvert(getSelectedText())+" EUR";
+        popup.innerHTML =  getAndConvert+" EUR";
         target.parentNode.appendChild(popup);
         popup.style.position = 'absolute';
         popup.style.top = e.clientY-20+'px';
@@ -49,5 +50,6 @@ var CurrencyConverter = (function () {
         return instance;
     };
 
-    this.addEventListener ('contextmenu', createConvertedPopup, false);
+    this.addEventListener ('contextmenu', instance.createConvertedPopup, false);
 })();
+

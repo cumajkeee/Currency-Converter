@@ -1,6 +1,7 @@
-var CurrencyConverter = (function (){
+var CurrencyConverter = (function () {
+    var instance = this;
 
-    function getSelectedText(){
+    this.getSelectedText = function () {
         var selected;
         if (window.getSelection) {
             selected = window.getSelection().toString();
@@ -10,18 +11,18 @@ var CurrencyConverter = (function (){
             selected = document.selection.createRange().text;
         }
         return selected;
-    }
+    };
 
-    function checkAndConvert(str){
-        if(str.length !== 0 && !isNaN(str)){
+    this.checkAndConvert = function (str) {
+        if(str.length !== 0 && !isNaN(str)) {
             str /= 1.3;
-            return str;
+            return str.toFixed(2);
         } else {
             return false;
         }
-    }
+    };
 
-    function createConvertedPopup (e){
+    this.createConvertedPopup = function (e) {
         var e = e || window.event;
         var target = e.target || e.srcElement;
         event.preventDefault ? event.preventDefault() : (event.returnValue=false);
@@ -31,7 +32,7 @@ var CurrencyConverter = (function (){
         }
 
         var popup = document.createElement('div');
-        popup.innerHTML =  checkAndConvert(getSelectedText()).toFixed(2)+" EUR";
+        popup.innerHTML =  checkAndConvert(getSelectedText())+" EUR";
         target.parentNode.appendChild(popup);
         popup.style.position = 'absolute';
         popup.style.top = e.clientY-20+'px';
@@ -42,7 +43,11 @@ var CurrencyConverter = (function (){
                 popup.parentNode.removeChild(popup);
             }
         }, 3000);
-    }
+    };
+
+    CurrencyConverter = function () {
+        return instance;
+    };
 
     this.addEventListener ('contextmenu', createConvertedPopup, false);
 })();
